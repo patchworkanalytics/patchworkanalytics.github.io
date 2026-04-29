@@ -1,6 +1,7 @@
 ---
 import { siteConfig, uiConfig } from '../config'
 import SocialLinks from './SocialLinks.astro'
+import Disclaimer from './Disclaimer.astro'
 const { name } = siteConfig
 const year = new Date().getFullYear()
 ---
@@ -12,6 +13,7 @@ const year = new Date().getFullYear()
     <div class="flex items-center gap-5">
       <SocialLinks iconSize={uiConfig.iconSize} />
     </div>
+    <Disclaimer />
     <p class="text-text-muted-secondary text-sm">
       &copy; {year}
       {name}. Built with

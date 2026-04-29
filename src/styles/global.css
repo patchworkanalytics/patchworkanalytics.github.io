@@ -22,11 +22,6 @@
         font-weight: bold;
     }
 
-    /*html .text-interactive,*/
-    /*html .text-interactive-light {*/
-    /*    font-weight: bold;*/
-    /*}*/
-
     /* Tag lozenges in light mode — two options, comment out the one you don't want: */
 
      /*Option A: default — colored text on faint background */
@@ -92,12 +87,14 @@
     --font-size-nav: 1.25rem; /* sidebar & mobile nav links → text-nav */
     --font-size-card-title: 1.125rem; /* card / item headings      → text-card-title */
     --font-size-site-name: 1.25rem; /* sidebar site name         → text-site-name */
+
     /*
     Logo colors
     */
     --color-logo-accent: #f4c402;
     --color-logo-accent-light: #f4edd4;
     --color-logo-dark: #02637c;
+    --color-test: #770d94;
 
     /* logo color variants */
     --color-logo-dark-medium: #0390b8;
@@ -121,6 +118,8 @@
     /*--color-text-muted: #f4c402;*/
     --color-text-muted-secondary: #5e728b;
 
+    --hex-grid-opacity: 0.3;
+
     --color-code-error: #e74c3c;
     --color-bg-code-error: #fae9e6;
     --color-bg-code-misc: #272823;
@@ -128,12 +127,6 @@
     --color-code-output: #b3b2b2;
     --color-bg-code-output: #b3b2b2;
 }
-
-/*!* Light theme overrides — applied when <html class="light"> *!*/
-/*html.light .text-interactive,*/
-/*html.light .text-interactive-light {*/
-/*    font-weight: bold;*/
-/*}*/
 
 html.light {
     --color-bg: #f3f8fa;
@@ -149,10 +142,11 @@ html.light {
     --color-interactive-strong: #e29503;
     --color-interactive-light: #e2cda0;
 
+    --hex-grid-opacity: 0.5;
+
     --color-code-output: #616161;
     --color-bg-code-output: #616161;
     --color-bg-code-misc: #fae9e6;
-
 }
 
 @layer base {
@@ -166,19 +160,20 @@ html.light {
         @apply text-text-primary font-sans antialiased;
     }
 
-    /*body {*/
-    /*  !* Base color + a slow radial glow centered at the top of the page.*/
-    /*     To change: edit background-color and/or the gradient stop colors below.*/
-    /*     See CUSTOMIZE.md → "Colors & Background" for details. *!*/
-    /*  background-color: #0d1412;*/
-    /*  background-image: radial-gradient(*/
-    /*    ellipse 140% 55% at 50% 0%,*/
-    /*    rgba(16, 45, 38, 0.85) 0%,*/
-    /*    transparent 65%*/
-    /*  );*/
-    /*  min-height: 100dvh;*/
-    /*  @apply text-text-primary font-sans antialiased;*/
-    /*}*/
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-color: var(--color-surface-border);
+        -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='34.64'><path d='M 10 17.32 L 20 0 L 40 0 L 50 17.32 L 40 34.64 M 20 34.64 L 10 17.32 M 0 17.32 L 10 17.32 M 50 17.32 L 60 17.32' fill='none' stroke='white' stroke-width='0.8'/></svg>");
+        mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='34.64'><path d='M 10 17.32 L 20 0 L 40 0 L 50 17.32 L 40 34.64 M 20 34.64 L 10 17.32 M 0 17.32 L 10 17.32 M 50 17.32 L 60 17.32' fill='none' stroke='white' stroke-width='0.8'/></svg>");
+        -webkit-mask-size: 60px 34.64px;
+        mask-size: 60px 34.64px;
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+        opacity: var(--hex-grid-opacity);
+    }
 }
 
 .sidenote {

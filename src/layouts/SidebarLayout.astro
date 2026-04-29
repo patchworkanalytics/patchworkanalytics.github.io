@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro'
 import Sidebar from '../components/Sidebar.astro'
-import Footer from '../components/SidebarFooter.astro'
+import MobileFooter from '../components/MobileFooter.astro'
 import ThemeToggle from '../components/ThemeToggle.astro'
 
 interface Props {
@@ -24,7 +24,7 @@ const { title, description, ogImage } = Astro.props
         <slot />
       </div>
       <div class="lg:hidden">
-        <Footer />
+        <MobileFooter />
       </div>
     </div>
   </div>
