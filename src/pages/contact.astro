@@ -1,0 +1,14 @@
+---
+import SidebarLayout from '../layouts/SidebarLayout.astro'
+import Contact from '../components/Contact.astro'
+import { siteConfig } from '../config'
+---
+
+<SidebarLayout
+  title={`Contact — ${siteConfig.name}`}
+  description="Get in touch"
+>
+  <main>
+    <Contact />
+  </main>
+</SidebarLayout>

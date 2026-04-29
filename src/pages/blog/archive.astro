@@ -1,0 +1,141 @@
+---
+import SidebarLayout from '../../layouts/SidebarLayout.astro';
+import { blogSettings } from '../../config';
+import { readingTime } from '../../utils/readingTime';
+import { getPublishedPosts } from '../../utils/blog';
+
+const base = import.meta.env.BASE_URL;
+
+const posts = await getPublishedPosts();
+
+// Group by year
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<SidebarLayout title="Archive — Blog" description="All posts by year.">
+  <main class="section-padding">
+    <div class="container-max">
+
+      <a
+        href={`${base}blog`}
+        class="inline-flex items-center gap-2 text-text-muted hover:text-interactive transition-colors text-body mb-10"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        All posts
+      </a>
+
+      <div class="mb-10 flex items-baseline justify-between">
+        <div>
+          <p class="text-interactive font-mono text-eyebrow uppercase tracking-widest mb-3">Archive</p>
+          <h1 class="text-3xl md:text-4xl font-bold text-text-primary">All Posts</h1>
+        </div>
+        <span class="text-label text-text-muted font-mono">{posts.length} posts</span>
+      </div>
+
+      {blogSettings.enableSearch && (
+        <div class="mb-10">
+          <input
+            id="archive-search"
+            type="search"
+            placeholder="Filter by title or tag…"
+            autocomplete="off"
+            class="w-full px-4 py-2 rounded-lg border border-surface-border bg-surface-muted text-text-primary placeholder:text-text-muted text-body focus:outline-none focus:border-interactive transition-colors"
+          />
+          <p id="archive-empty" class="hidden mt-6 text-text-muted text-body">No posts match.</p>
+        </div>
+      )}
+
+      <div id="archive-list">
+        {years.map((year) => (
+          <section data-year={year} class="mb-10">
+            <h2 class="text-label font-mono text-text-muted uppercase tracking-widest mb-4 pb-2 border-b border-surface-border">
+              {year}
+            </h2>
+            <ul class="space-y-4">
+              {byYear.get(year)!.map((post) => {
+                const slug = post.id.replace(/\.md$/, '');
+                const tagList = (post.data.tags ?? []).join(' ');
+                return (
+                  <li
+                    data-title={post.data.title.toLowerCase()}
+                    data-tags={tagList.toLowerCase()}
+                    class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4"
+                  >
+                    <div class="flex items-center gap-2 text-label font-mono text-text-muted shrink-0">
+                      <time>
+                        {post.data.pubDate.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' })}
+                      </time>
+                      {blogSettings.showReadingTime && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>{readingTime(post.body ?? '')}</span>
+                        </>
+                      )}
+                    </div>
+                    <div class="flex flex-col gap-y-1 min-w-0">
+                      <a
+                        href={`${base}blog/${slug}`}
+                        class="text-body text-text-primary hover:text-interactive transition-colors"
+                      >
+                        {post.data.title}
+                      </a>
+                      {blogSettings.showTagsInArchive && post.data.tags && (
+                        <div class="flex flex-wrap gap-x-3 gap-y-1">
+                          {post.data.tags.map((tag) => (
+                            <a
+                              href={`${base}blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                              class="text-label font-mono text-interactive hover:text-interactive-light transition-colors"
+                            >
+                              #{tag}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+    </div>
+  </main>
+</SidebarLayout>
+
+{blogSettings.enableSearch && (
+  <script>
+    const input   = document.getElementById('archive-search') as HTMLInputElement;
+    const empty   = document.getElementById('archive-empty')!;
+    const items   = document.querySelectorAll<HTMLLIElement>('#archive-list li[data-title]');
+    const sections = document.querySelectorAll<HTMLElement>('#archive-list section[data-year]');
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      items.forEach(item => {
+        const match = !q || item.dataset.title!.includes(q) || item.dataset.tags!.includes(q);
+        item.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+
+      // Hide year headings with no visible posts
+      sections.forEach(section => {
+        const anyVisible = [...section.querySelectorAll('li[data-title]')].some(li => (li as HTMLElement).style.display !== 'none');
+        section.style.display = anyVisible ? '' : 'none';
+      });
+
+      empty.classList.toggle('hidden', visibleCount > 0);
+    });
+  </script>
+)}

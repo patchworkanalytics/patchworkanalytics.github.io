@@ -1,0 +1,88 @@
+---
+import { render } from 'astro:content'
+import SidebarLayout from '../../layouts/SidebarLayout.astro'
+import { blogSettings } from '../../config'
+import { readingTime } from '../../utils/readingTime'
+import { getPublishedPosts } from '../../utils/blog'
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts()
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, '') },
+    props: { post },
+  }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<SidebarLayout title={`${post.data.title} — YourName`} description={post.data.description}>
+  <main class="section-padding">
+    <div class="container-max max-w-2xl">
+      <!-- Back link -->
+      <a
+        href={`${import.meta.env.BASE_URL}blog`}
+        class="inline-flex items-center gap-2 text-text-muted hover:text-interactive transition-colors text-med mb-10"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        All posts
+      </a>
+
+      <!-- Header -->
+      <header class="mb-10">
+        <div class="flex items-center gap-3 text-text-muted font-mono text-sm">
+          <time>
+            {
+              post.data.pubDate.toLocaleDateString('en-US', {
+                timeZone: 'UTC',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })
+            }
+          </time>
+          {
+            blogSettings.showReadingTimeInPost && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{readingTime(post.body ?? '')}</span>
+              </>
+            )
+          }
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-text-primary mt-3 mb-4">
+          {post.data.title}
+        </h1>
+        {
+          post.data.tags && (
+            <div class="flex flex-wrap gap-2">
+              {post.data.tags.map((tag) => (
+                <a
+                  href={`${import.meta.env.BASE_URL}blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                  class="px-2 py-1 rounded text-label font-mono text-interactive bg-interactive/10 hover:bg-interactive/20 transition-colors"
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <!-- Post body -->
+      <div class="prose prose-invert prose-teal max-w-none">
+        <Content />
+      </div>
+    </div>
+  </main>
+</SidebarLayout>

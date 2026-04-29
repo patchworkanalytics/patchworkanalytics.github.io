@@ -1,0 +1,23 @@
+---
+import SidebarLayout from '../layouts/SidebarLayout.astro'
+import { siteConfig } from '../config'
+---
+
+<SidebarLayout
+  title={`404 — ${siteConfig.shortName}`}
+  description="Page not found."
+>
+  <main class="flex flex-col justify-center px-8 py-16 lg:py-32">
+    <p class="text-sm font-mono text-neutral-500 dark:text-neutral-400 mb-2">404</p>
+    <h1 class="text-3xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Page not found</h1>
+    <p class="text-neutral-600 dark:text-neutral-400 mb-8">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+    <a
+      href="/"
+      class="text-sm font-medium text-neutral-900 dark:text-neutral-100 underline underline-offset-4 hover:opacity-70 transition-opacity"
+    >
+      Back to home
+    </a>
+  </main>
+</SidebarLayout>

@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content'
+import SidebarLayout from '../../../layouts/SidebarLayout.astro'
+
+const base = import.meta.env.BASE_URL
+
+function tagSlug(tag: string) {
+  return tag.toLowerCase().replace(/\s+/g, '-')
+}
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft)
+
+  const tagMap = new Map<string, typeof posts>()
+  for (const post of posts) {
+    for (const tag of post.data.tags ?? []) {
+      if (!tagMap.has(tag)) tagMap.set(tag, [])
+      tagMap.get(tag)!.push(post)
+    }
+  }
+
+  return [...tagMap.entries()].map(([tag, tagPosts]) => ({
+    params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+    props: {
+      tag,
+      posts: tagPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }))
+}
+
+const { tag, posts } = Astro.props
+---
+
+<SidebarLayout title={`#${tag} — Blog`} description={`Blog posts tagged "${tag}".`}>
+  <main class="section-padding">
+    <div class="container-max">
+      <a
+        href={`${base}blog/tags`}
+        class="inline-flex items-center gap-2 text-text-muted hover:text-interactive transition-colors text-body mb-10"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        All tags
+      </a>
+
+      <div class="mb-12">
+        <p class="text-interactive font-mono text-eyebrow uppercase tracking-widest mb-3">Tag</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-text-primary">{tag}</h1>
+        <p class="text-text-muted text-body mt-2">
+          {posts.length}
+          {posts.length === 1 ? 'post' : 'posts'}
+        </p>
+      </div>
+
+      <ul class="space-y-8">
+        {
+          posts.map((post) => {
+            const slug = post.id.replace(/\.md$/, '')
+            return (
+              <li>
+                <a href={`${base}blog/${slug}`} class="group block">
+                  <article class="rounded-xl border border-surface-border bg-surface-muted p-6 hover:border-interactive transition-colors">
+                    <time class="text-text-muted font-mono text-label">
+                      {post.data.pubDate.toLocaleDateString('en-US', {
+                        timeZone: 'UTC',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </time>
+                    <h2 class="text-xl font-semibold text-text-primary mt-2 mb-2 group-hover:text-interactive transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-text-secondary text-body leading-relaxed">
+                      {post.data.description}
+                    </p>
+                    {post.data.tags && (
+                      <div class="flex flex-wrap gap-2 mt-4">
+                        {post.data.tags.map((t) => (
+                          <a
+                            href={`${base}blog/tags/${tagSlug(t)}`}
+                            class={`px-2 py-1 rounded text-label font-mono transition-colors ${t === tag ? 'text-interactive bg-interactive/20' : 'text-interactive bg-interactive/10 hover:bg-interactive/20'}`}
+                            onclick="event.stopPropagation()"
+                          >
+                            {t}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
+  </main>
+</SidebarLayout>

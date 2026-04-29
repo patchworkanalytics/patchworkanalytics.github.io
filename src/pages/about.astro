@@ -1,0 +1,14 @@
+---
+import SidebarLayout from '../layouts/SidebarLayout.astro'
+import About from '../components/About.astro'
+import { siteConfig } from '../config'
+---
+
+<SidebarLayout
+  title={`About — ${siteConfig.name}`}
+  description="About"
+>
+  <main>
+    <About />
+  </main>
+</SidebarLayout>

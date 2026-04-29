@@ -1,0 +1,43 @@
+---
+import { Icon } from 'astro-icon/components'
+const services = [
+  {
+    icon: 'heroicons:circle-stack',
+    title: 'Data Science & Machine Learning',
+    description: 'Build ML models ',
+    tags: [],
+  },
+]
+---
+
+<section id="services" class="section-padding">
+  <div class="container-max">
+    <div class="mb-12">
+      <p class="text-interactive font-mono text-sm uppercase tracking-widest mb-3">What I do</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-text-primary">Consulting Services</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        services.map((service) => (
+          <div class="rounded-xl border border-surface-border bg-surface-muted p-6 hover:border-interactive transition-colors group">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-interactive/10 text-interactive mb-4 group-hover:bg-interactive/20 transition-colors">
+              <Icon name={service.icon} class="h-6 w-6" />
+            </div>
+
+            <h3 class="text-lg font-semibold text-text-primary mb-2">{service.title}</h3>
+            <p class="text-text-secondary text-sm leading-relaxed mb-4">{service.description}</p>
+
+            <div class="flex flex-wrap gap-2">
+              {service.tags.map((tag) => (
+                <span class="px-2 py-1 rounded text-xs font-mono text-interactive bg-interactive/10">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

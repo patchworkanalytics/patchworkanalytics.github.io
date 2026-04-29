@@ -1,0 +1,234 @@
+@import 'tailwindcss';
+
+@plugin "@tailwindcss/typography";
+
+@layer utilities {
+    html.light .prose-invert {
+        color: var(--color-text-secondary);
+    }
+
+    html.light .prose-invert h1,
+    html.light .prose-invert h2,
+    html.light .prose-invert h3,
+    html.light .prose-invert h4,
+    html.light .prose-invert h5,
+    html.light .prose-invert h6,
+    html.light .prose-invert strong {
+        color: var(--color-text-primary);
+    }
+
+    html.light .text-interactive,
+    html.light .text-interactive-light {
+        font-weight: bold;
+    }
+
+    /*html .text-interactive,*/
+    /*html .text-interactive-light {*/
+    /*    font-weight: bold;*/
+    /*}*/
+
+    /* Tag lozenges in light mode — two options, comment out the one you don't want: */
+
+     /*Option A: default — colored text on faint background */
+    html.light .text-interactive.bg-interactive\/10 {
+        color: var(--color-interactive-strong);
+        /*color: var(--color-interactive);*/
+        background-color: color-mix(in srgb, var(--color-interactive) 20%, transparent);
+    }
+    html.light .hover\:bg-interactive\/20:hover {
+        background-color: color-mix(in srgb, var(--color-interactive) 30%, transparent);
+    }
+
+    /*!* Option B: inverted — pale text on solid background *!*/
+    /*html.light .text-interactive.bg-interactive\/10 {*/
+    /*    color: var(--color-bg);*/
+    /*    background-color: color-mix(in srgb, var(--color-interactive) 75%, transparent);*/
+    /*}*/
+    /*html.light .hover\:bg-interactive\/20:hover {*/
+    /*    background-color: var(--color-interactive);*/
+    /*}*/
+
+    /* Shiki dual-theme: light theme is the inline default; override to dark when not in light mode */
+    html:not(.light) .astro-code {
+        background-color: var(--shiki-dark-bg) !important;
+    }
+    html:not(.light) .astro-code span {
+        color: var(--shiki-dark) !important;
+    }
+
+    .prose code::before,
+    .prose code::after {
+        content: none;
+    }
+
+    /*set the inline code colors */
+    .prose :not(pre) > code {
+        font-family: var(--font-family-mono), monospace;
+        font-size: 0.875em;
+        font-weight: 400;
+        background-color: color-mix(in srgb, var(--color-surface-muted-2) 50%, transparent);
+        /*background-color: color-mix(in srgb, var(--color-interactive) 12%, transparent);*/
+        color: var(--color-text-primary);
+        padding: 0.15em 0.4em;
+        border-radius: 0.25rem;
+    }
+}
+
+@theme {
+    --font-family-sans: 'Geist', system-ui, sans-serif;
+    --font-family-mono: 'JetBrains Mono', 'Martian', monospace;
+
+    /* Semantic font sizes */
+    /*
+    rem is "root em" -- relative to the default browser font size. Best practice to use this
+    because it will always scale with browser settings (px is always fixed size)
+
+    Tailwinds reads each of these `--font-size-*` to `text-*`
+    */
+    --font-size-label: 0.75rem; /* tags, chips, timestamps   → text-label */
+    --font-size-body: 1.1rem; /*  0.875rem;   /* descriptions, body copy   → text-body */
+    --font-size-text: 1rem;
+    --font-size-eyebrow: 0.95rem; /* section eyebrow labels    → text-eyebrow */
+    --font-size-nav: 1.25rem; /* sidebar & mobile nav links → text-nav */
+    --font-size-card-title: 1.125rem; /* card / item headings      → text-card-title */
+    --font-size-site-name: 1.25rem; /* sidebar site name         → text-site-name */
+    /*
+    Logo colors
+    */
+    --color-logo-accent: #f4c402;
+    --color-logo-accent-light: #f4edd4;
+    --color-logo-dark: #02637c;
+
+    /* logo color variants */
+    --color-logo-dark-medium: #0390b8;
+    --color-logo-dark-light: #7ebadb;
+
+    /* Dark theme (default) */
+    --color-bg: #091f24;
+    --color-surface: #1b3c44;
+    /*blog card bkg, hover-select bkg, tile bkg*/
+    --color-surface-muted: #11262a;
+    --color-surface-muted-2: #1b3c44;
+    /*--color-surface-muted: #11262a;*/
+    --color-surface-border: #1e3b39;
+    --color-interactive: #0d9488;
+    --color-interactive-strong: #0d9488;
+    --color-interactive-light: #30afa4;
+
+    --color-text-primary: #fdfaee;
+    /*--color-text-primary: #f1f5f9;*/
+    --color-text-muted: #d2b74b;
+    /*--color-text-muted: #f4c402;*/
+    --color-text-muted-secondary: #5e728b;
+
+    --color-code-error: #e74c3c;
+    --color-bg-code-error: #fae9e6;
+    --color-bg-code-misc: #272823;
+    --color-text-error: #000000;
+    --color-code-output: #b3b2b2;
+    --color-bg-code-output: #b3b2b2;
+}
+
+/*!* Light theme overrides — applied when <html class="light"> *!*/
+/*html.light .text-interactive,*/
+/*html.light .text-interactive-light {*/
+/*    font-weight: bold;*/
+/*}*/
+
+html.light {
+    --color-bg: #f3f8fa;
+    --color-surface: #ffffff;
+    --color-surface-muted: #daecf1;
+    --color-surface-muted-2: #cbdee3;
+    --color-surface-border: #f5e19f;
+
+    --color-text-primary: #0e3139;
+    --color-text-secondary: #475569;
+    --color-text-muted: #0b7970;
+    --color-interactive: #f5b235;
+    --color-interactive-strong: #e29503;
+    --color-interactive-light: #e2cda0;
+
+    --color-code-output: #616161;
+    --color-bg-code-output: #616161;
+    --color-bg-code-misc: #fae9e6;
+
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--color-bg);
+        min-height: 100dvh;
+        @apply text-text-primary font-sans antialiased;
+    }
+
+    /*body {*/
+    /*  !* Base color + a slow radial glow centered at the top of the page.*/
+    /*     To change: edit background-color and/or the gradient stop colors below.*/
+    /*     See CUSTOMIZE.md → "Colors & Background" for details. *!*/
+    /*  background-color: #0d1412;*/
+    /*  background-image: radial-gradient(*/
+    /*    ellipse 140% 55% at 50% 0%,*/
+    /*    rgba(16, 45, 38, 0.85) 0%,*/
+    /*    transparent 65%*/
+    /*  );*/
+    /*  min-height: 100dvh;*/
+    /*  @apply text-text-primary font-sans antialiased;*/
+    /*}*/
+}
+
+.sidenote {
+    border-left: 3px solid var(--color-interactive);
+    background-color: color-mix(in srgb, var(--color-interactive) 8%, transparent);
+    color: var(--color-text-muted);
+    padding: 0.6em 1em;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-size: 0.9em;
+    margin: 1em 0;
+}
+
+pre.python-block-output {
+    border-left: 4px solid var(--color-code-output);
+    background-color: color-mix(in srgb, var(--color-code-output) 12%, transparent);
+    color: var(--color-text-primary);
+    padding: 0.6em 1em;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-size: 0.8em;
+    margin: 1em 0;
+}
+
+pre.python-block-error {
+    border-left: 4px solid var(--color-code-error);
+    /*background-color: var(--color-bg-code-misc);*/
+    background-color: color-mix(in srgb, var(--color-bg-code-misc) 75%, red, transparent);
+    /*background-color: color-mix(in srgb, var(--color-bg-code-error) 20%, black);*/
+    color: var(--color-text-primary);
+    padding: 0.6em 1em;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-size: 0.8em;
+    margin: 1em 0;
+}
+
+@utility text-nav {
+    font-size: var(--font-size-nav);
+    font-weight: bold;
+}
+
+@utility gradient-text {
+    background: linear-gradient(to right, var(--color-interactive), var(--color-interactive-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@utility section-padding {
+    @apply py-20 px-6 lg:px-8;
+}
+
+@utility container-max {
+    @apply max-w-6xl mx-auto;
+}

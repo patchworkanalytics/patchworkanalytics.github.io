@@ -1,0 +1,16 @@
+---
+import SidebarLayout from '../layouts/SidebarLayout.astro'
+import Hero from '../components/Hero.astro'
+import RecentPosts from '../components/RecentPosts.astro'
+import { siteConfig } from '../config'
+---
+
+<SidebarLayout
+  title={`${siteConfig.name} — ${siteConfig.tagline.replace('\n', ' ')}`}
+  description={siteConfig.tagline}
+>
+  <main>
+    <Hero />
+    <RecentPosts />
+  </main>
+</SidebarLayout>

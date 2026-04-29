@@ -1,0 +1,26 @@
+---
+import { siteConfig, uiConfig } from '../config'
+import SocialLinks from './SocialLinks.astro'
+const { name } = siteConfig
+const year = new Date().getFullYear()
+---
+
+<footer class="border-t border-surface-border bg-surface">
+  <div
+    class="container-max flex flex-col items-center justify-center gap-4 py-8 px-6 lg:px-8 mx-auto max-w-6xl"
+  >
+    <div class="flex items-center gap-5">
+      <SocialLinks iconSize={uiConfig.iconSize} />
+    </div>
+    <p class="text-text-muted-secondary text-sm">
+      &copy; {year}
+      {name}. Built with
+      <a
+        href="https://astro.build"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-interactive hover:text-interactive-light transition-colors">Astro</a
+      >.
+    </p>
+  </div>
+</footer>

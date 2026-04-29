@@ -1,0 +1,167 @@
+---
+import type { GetStaticPathsOptions } from 'astro'
+import SidebarLayout from '../../layouts/SidebarLayout.astro'
+import { blogSettings } from '../../config'
+import { readingTime } from '../../utils/readingTime'
+import { getPublishedPosts } from '../../utils/blog'
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const posts = await getPublishedPosts()
+  return paginate(posts, { pageSize: blogSettings.postsPerPage })
+}
+
+const { page } = Astro.props
+const base = import.meta.env.BASE_URL
+---
+
+<SidebarLayout
+  title={page.currentPage === 1 ? 'Blog' : `Blog — Page ${page.currentPage}`}
+  description="Writing on data engineering, ML, and consulting."
+>
+  <main class="section-padding">
+    <div class="container-max">
+      <div class="mb-12 flex items-baseline justify-between">
+        <div>
+          <p class="text-interactive font-mono text-eyebrow uppercase tracking-widest mb-3">Writing</p>
+          <h1 class="text-3xl md:text-4xl font-bold text-text-primary">Blog</h1>
+        </div>
+        {
+          (blogSettings.showArchive || blogSettings.showTags) && (
+            <div class="flex items-center gap-6">
+              {blogSettings.showArchive && (
+                <a
+                  href={`${base}blog/archive`}
+                  class="text-body text-text-muted hover:text-interactive transition-colors font-mono"
+                >
+                  Archive
+                </a>
+              )}
+              {blogSettings.showTags && (
+                <a
+                  href={`${base}blog/tags`}
+                  class="text-body text-text-muted hover:text-interactive transition-colors font-mono"
+                >
+                  Tags
+                </a>
+              )}
+            </div>
+          )
+        }
+      </div>
+
+      {page.data.length === 0 && <p class="text-text-muted">No posts yet.</p>}
+
+      <ul class="space-y-8">
+        {
+          page.data.map((post) => {
+            const slug = post.id.replace(/\.md$/, '')
+            return (
+              <li>
+                <a href={`${base}blog/${slug}`} class="group block">
+                  <article class="rounded-xl border border-surface-border bg-surface-muted p-6 hover:border-interactive transition-colors">
+                    <div class="flex items-center gap-3 text-text-muted font-mono text-label">
+                      <time>
+                        {post.data.pubDate.toLocaleDateString('en-US', {
+                          timeZone: 'UTC',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </time>
+                      {blogSettings.showReadingTime && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>{readingTime(post.body ?? '')}</span>
+                        </>
+                      )}
+                    </div>
+                    <h2 class="text-xl font-semibold text-text-primary mt-2 mb-2 group-hover:text-interactive transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-text-secondary text-body leading-relaxed">
+                      {post.data.description}
+                    </p>
+                    {post.data.tags && (
+                      <div class="flex flex-wrap gap-2 mt-4">
+                        {post.data.tags.map((tag) => (
+                          <a
+                            href={`${base}blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                            class="px-2 py-1 rounded text-label font-mono text-interactive bg-interactive/10 hover:bg-interactive/20 transition-colors"
+                            onclick="event.stopPropagation()"
+                          >
+                            {tag}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </article>
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+
+      <!-- Pagination controls -->
+      {
+        page.lastPage > 1 && (
+          <nav class="flex items-center justify-between mt-12 pt-8 border-t border-surface-border">
+            {page.url.prev ? (
+              <a
+                href={page.url.prev}
+                class="inline-flex items-center gap-2 text-body text-text-muted hover:text-interactive transition-colors font-mono"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Newer
+              </a>
+            ) : (
+              <span />
+            )}
+
+            <span class="text-label text-text-muted font-mono">
+              {page.currentPage} / {page.lastPage}
+            </span>
+
+            {page.url.next ? (
+              <a
+                href={page.url.next}
+                class="inline-flex items-center gap-2 text-body text-text-muted hover:text-interactive transition-colors font-mono"
+              >
+                Older
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            ) : (
+              <span />
+            )}
+          </nav>
+        )
+      }
+    </div>
+  </main>
+</SidebarLayout>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Sidebar from '../components/Sidebar.astro'
+import Footer from '../components/SidebarFooter.astro'
+import ThemeToggle from '../components/ThemeToggle.astro'
+
+interface Props {
+  title: string
+  description?: string
+  ogImage?: string
+}
+
+const { title, description, ogImage } = Astro.props
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <div class="hidden lg:block fixed top-4 right-4 z-50">
+    <ThemeToggle />
+  </div>
+  <div class="lg:flex lg:min-h-screen">
+    <Sidebar />
+    <div class="lg:w-2/3 min-w-0 flex flex-col min-h-[calc(100dvh-3.5rem)] lg:min-h-0">
+      <div class="flex-1">
+        <slot />
+      </div>
+      <div class="lg:hidden">
+        <Footer />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,185 @@
+---
+import { siteConfig, uiConfig } from '../config'
+import ThemeToggle from './ThemeToggle.astro'
+import SocialLinks from './SocialLinks.astro'
+
+interface Props {
+  iconSize?: string
+}
+
+const { iconSize = uiConfig.iconSize } = Astro.props
+
+const base = import.meta.env.BASE_URL
+const { name, shortName, tagline } = siteConfig
+const year = new Date().getFullYear()
+
+const navItems = [
+  { href: `${base}`, label: 'Home' },
+  { href: `${base}blog`, label: 'Blog' },
+  ...(siteConfig.showConsulting ? [{ href: `${base}services`, label: 'Consulting Services' }] : []),
+  { href: `${base}about`, label: 'About Me' },
+  { href: `${base}contact`, label: 'Contact' },
+]
+---
+
+<!-- ─── Mobile: top sticky bar ─────────────────────────────────────────── -->
+<header
+  class="lg:hidden sticky top-0 z-50 bg-surface/90 backdrop-blur-sm border-b border-surface-border"
+>
+  <div class="relative flex items-center justify-between h-14 px-6">
+    <!-- Icon + name -->
+    <a href={base} class="flex items-center gap-2">
+      <img src={`${base}icon.svg`} alt="" class="h-9 w-auto" />
+      <span class="font-semibold text-text-primary text-site-name">{shortName}</span>
+    </a>
+
+    <!-- Theme toggle + hamburger -->
+    <div class="flex items-center gap-3">
+      <ThemeToggle iconSize={uiConfig.iconSize} />
+      <button
+        id="mobile-menu-btn"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        class="text-text-secondary hover:text-text-primary transition-colors"
+      >
+        <svg
+          id="mobile-menu-icon-open"
+          xmlns="http://www.w3.org/2000/svg"
+          class={uiConfig.iconSize}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg
+          id="mobile-menu-icon-close"
+          xmlns="http://www.w3.org/2000/svg"
+          class={`${uiConfig.iconSize} hidden`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Dropdown -->
+    <nav
+      id="mobile-menu"
+      class="hidden absolute top-full right-0 bg-surface/95 backdrop-blur-sm border border-surface-border rounded-bl-lg shadow-lg overflow-hidden"
+    >
+      {
+        navItems.map(({ href, label }) => (
+          <a
+            href={href}
+            class="block px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors text-nav"
+          >
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn')!
+  const menu = document.getElementById('mobile-menu')!
+  const iconOpen = document.getElementById('mobile-menu-icon-open')!
+  const iconClose = document.getElementById('mobile-menu-icon-close')!
+
+  function openMenu() {
+    menu.classList.remove('hidden')
+    iconOpen.classList.add('hidden')
+    iconClose.classList.remove('hidden')
+    btn.setAttribute('aria-expanded', 'true')
+    btn.setAttribute('aria-label', 'Close navigation menu')
+  }
+
+  function closeMenu() {
+    menu.classList.add('hidden')
+    iconOpen.classList.remove('hidden')
+    iconClose.classList.add('hidden')
+    btn.setAttribute('aria-expanded', 'false')
+    btn.setAttribute('aria-label', 'Open navigation menu')
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    menu.classList.contains('hidden') ? openMenu() : closeMenu()
+  })
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target as Node)) closeMenu()
+  })
+
+  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu))
+</script>
+
+<!-- ─── Desktop: fixed left sidebar ───────────────────────────────────── -->
+<aside
+  class="hidden lg:flex flex-col w-3/12 shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-surface-border px-10 py-12"
+>
+  <!-- Name / logo -->
+  <div class="mb-10">
+    <a href={base}>
+      <img src={`${base}logo.svg`} alt={name} class={uiConfig.logoSize} />
+    </a>
+
+    <p class="text-text-muted text-body font-bold font-mono mt-8">
+      {
+        tagline
+          .split('\n')
+          .map((line, i) => <span class={`block${i > 0 ? ' pl-4' : ''}`}>{line}</span>)
+      }
+    </p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="mb-auto">
+    <ul class="space-y-1">
+      {
+        navItems.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class="flex items-center gap-2 px-3 py-2 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors text-nav"
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <!-- Social / contact links -->
+  <div class="mt-10 pt-8 border-t border-surface-border flex items-center justify-center gap-5">
+    <SocialLinks iconSize={iconSize} />
+  </div>
+
+  <!-- SidebarFooter -->
+  <div class="mt-8 pt-6 border-t border-surface-border">
+    <p class="text-text-muted-secondary text-label leading-relaxed">
+      &copy; {year}
+      {name}.<br />
+      Powered by <a
+        href="https://astro.build"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-interactive hover:text-interactive-light transition-colors">Astro</a
+      >.
+    </p>
+  </div>
+</aside>
