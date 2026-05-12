@@ -15,10 +15,13 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@tailwindcss/vite": "^4.2.4",
-    "astro": "^6.1.9",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.1",
     "astro-icon": "^1.1.5",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.3.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
