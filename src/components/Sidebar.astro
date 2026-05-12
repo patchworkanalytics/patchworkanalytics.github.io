@@ -171,17 +171,19 @@ const navItems = [
   </div>
 
   <!-- Desktop Footer -->
-  <div class="mt-8 pt-6 border-t border-surface-border">
+  <p
+    class="text-text-muted-secondary text-label leading-relaxed mt-8 border-t border-surface-border pt-3 text-center"
+  >
+    &copy; {year}
+    {name}.<br />
+    Powered by <a
+      href="https://astro.build"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-interactive hover:text-interactive-light transition-colors">Astro</a
+    >.
+  </p>
+  <div class="mt-3 pt-3 border-t border-surface-border px-0">
     <Disclaimer />
-    <p class="text-text-muted-secondary text-label leading-relaxed mt-5 border-t border-surface-border pt-3">
-      &copy; {year}
-      {name}.<br />
-      Powered by <a
-        href="https://astro.build"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-interactive hover:text-interactive-light transition-colors">Astro</a
-      >.
-    </p>
   </div>
 </aside>
